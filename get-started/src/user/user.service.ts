@@ -1,30 +1,36 @@
-import { Injectable } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
-import { randomUUID } from 'crypto';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { UserRepository } from './user.repository';
+import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-  private readonly users: User[] = [];
+  constructor(private readonly userRepository: UserRepository) {}
 
-  create(createUserDto: CreateUserDto) {
-    const newUser: User = {
-      id: randomUUID(),
-      ...createUserDto,
-    };
-    this.users.push(newUser);
-    return newUser;
+  async getUsers(): Promise<User[]> {
+    return this.userRepository.findAll();
   }
 
-  findAll(): User[] {
-    const data = this.users;
-    return data;
-  }
-
-  deleteUser(id: string): void {
-    const index = this.users.findIndex((u) => u.id === id);
-    if (index !== -1) {
-      this.users.splice(index, 1);
+  async getUserById(id: string): Promise<User> {
+    const user = await this.userRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
+    return user;
+  }
+
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    return this.userRepository.create(createUserDto);
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    await this.getUserById(id);
+    await this.userRepository.delete(id);
+  }
+
+  async updateUser(id: string, updateData: UpdateUserDto): Promise<User> {
+    await this.getUserById(id);
+    await this.userRepository.update(id, updateData);
+    return this.getUserById(id);
   }
 }
