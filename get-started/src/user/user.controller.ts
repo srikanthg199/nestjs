@@ -7,12 +7,15 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('user')
+// @UseGuards(AuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -22,6 +25,7 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   findAll() {
     return this.userService.getUsers();
   }
