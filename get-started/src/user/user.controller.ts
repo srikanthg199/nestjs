@@ -13,6 +13,8 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('user')
 // @UseGuards(AuthGuard)
@@ -25,6 +27,7 @@ export class UserController {
   }
 
   @Get()
+  @Roles(['admin'])
   @UseGuards(AuthGuard)
   findAll() {
     return this.userService.getUsers();
