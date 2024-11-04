@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -15,6 +16,8 @@ import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
+import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 
 @Controller('user')
 // @UseGuards(AuthGuard)
@@ -28,7 +31,8 @@ export class UserController {
 
   @Get()
   @Roles(['admin'])
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @UseInterceptors(LoggingInterceptor, TransformInterceptor)
   findAll() {
     return this.userService.getUsers();
   }

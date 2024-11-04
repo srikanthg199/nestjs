@@ -9,7 +9,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 
 const fakeUser = {
   name: 'Test roles guard user',
-  roles: ['guest'],
+  roles: ['admin', 'guest'],
 };
 
 @Injectable()

@@ -23,9 +23,10 @@ export class UserService {
     return this.userRepository.create(createUserDto);
   }
 
-  async deleteUser(id: string): Promise<void> {
+  async deleteUser(id: string): Promise<unknown> {
     await this.getUserById(id);
     await this.userRepository.delete(id);
+    return { status: 'success', message: 'User deleted successfully' };
   }
 
   async updateUser(id: string, updateData: UpdateUserDto): Promise<User> {

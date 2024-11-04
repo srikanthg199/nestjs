@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from 'express';
 export class LoggingMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log(`Request method: ${req.method}, URL: ${fullUrl}`);
+    console.log(/middleware/, `Request method: ${req.method}, URL: ${fullUrl}`);
     next();
   }
 }
