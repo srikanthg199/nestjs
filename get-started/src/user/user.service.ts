@@ -8,7 +8,7 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async getUsers(): Promise<User[]> {
-    return this.userRepository.findAll();
+    return await this.userRepository.findAll();
   }
 
   async getUserById(id: string): Promise<User> {
@@ -23,10 +23,10 @@ export class UserService {
     return this.userRepository.create(createUserDto);
   }
 
-  async deleteUser(id: string): Promise<unknown> {
+  async deleteUser(id: string): Promise<void> {
     await this.getUserById(id);
     await this.userRepository.delete(id);
-    return { status: 'success', message: 'User deleted successfully' };
+    return;
   }
 
   async updateUser(id: string, updateData: UpdateUserDto): Promise<User> {

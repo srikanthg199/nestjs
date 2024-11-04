@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Res,
   UseGuards,
   UseInterceptors,
   ValidationPipe,
@@ -17,7 +18,8 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
-import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
+import { Response } from 'express';
+import { sendResponse } from 'src/utils/response.util';
 
 @Controller('user')
 // @UseGuards(AuthGuard)
@@ -25,33 +27,42 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post()
-  create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+  create(
+    @Body(new ValidationPipe()) createUserDto: CreateUserDto,
+    @Res() res: Response,
+  ) {
+    const user = this.userService.createUser(createUserDto);
+    return sendResponse(res, user, 'User created successfully');
   }
 
   @Get()
   @Roles(['admin'])
   @UseGuards(AuthGuard, RolesGuard)
-  @UseInterceptors(LoggingInterceptor, TransformInterceptor)
-  findAll() {
-    return this.userService.getUsers();
+  @UseInterceptors(LoggingInterceptor)
+  async findAll(@Res() res: Response) {
+    const users = await this.userService.getUsers();
+    return sendResponse(res, users, 'Users fetched successfully');
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.userService.getUserById(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
+    const user = await this.userService.getUserById(id);
+    return sendResponse(res, user, 'User fetched successfully');
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.userService.deleteUser(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
+    await this.userService.deleteUser(id);
+    return sendResponse(res, null, 'User deleted successfully');
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
+    @Res() res: Response,
   ) {
-    return this.userService.updateUser(id, updateUserDto);
+    const updatedUser = await this.userService.updateUser(id, updateUserDto);
+    return sendResponse(res, updatedUser, 'User updated successfully');
   }
 }
