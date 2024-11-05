@@ -27,11 +27,11 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post()
-  create(
+  async create(
     @Body(new ValidationPipe()) createUserDto: CreateUserDto,
     @Res() res: Response,
   ) {
-    const user = this.userService.createUser(createUserDto);
+    const user = await this.userService.createUser(createUserDto);
     return sendResponse(res, user, 'User created successfully');
   }
 

@@ -7,21 +7,10 @@ import { LoggingMiddleware } from './middleware/logging.middleware';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
 import { HttpExceptionFilter } from './exceptions/http-exception.filter';
+import { dataSourceOptions } from 'db/data-source';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'admin',
-      password: 'admin',
-      database: 'nest_course',
-      autoLoadEntities: true,
-      synchronize: true,
-    }),
-    UserModule,
-  ],
+  imports: [TypeOrmModule.forRoot(dataSourceOptions), UserModule],
   controllers: [AppController],
   providers: [
     // {

@@ -13,8 +13,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
+    // Extract error message from the exception response
+    const exceptionResponse = exception.getResponse();
+    const message = exceptionResponse?.message || exception.message;
+    const errorMessages = Array.isArray(message) ? message[0] : message;
+
+    console.log(/ex/, exception);
 
     // Send a structured error response
-    sendResponse(response, null, exception.message, status, false);
+    sendResponse(response, null, errorMessages, status, false);
   }
 }
