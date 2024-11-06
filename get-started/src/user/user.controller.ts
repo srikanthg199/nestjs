@@ -20,6 +20,7 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
 import { Response } from 'express';
 import { sendResponse } from 'src/utils/response.util';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('user')
 // @UseGuards(AuthGuard)
@@ -37,7 +38,8 @@ export class UserController {
 
   @Get()
   @Roles(['admin'])
-  @UseGuards(AuthGuard, RolesGuard)
+  // @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(LoggingInterceptor)
   async findAll(@Res() res: Response) {
     const users = await this.userService.getUsers();
@@ -65,4 +67,5 @@ export class UserController {
     const updatedUser = await this.userService.updateUser(id, updateUserDto);
     return sendResponse(res, updatedUser, 'User updated successfully');
   }
+  // Get user by email via body
 }

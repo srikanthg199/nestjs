@@ -6,7 +6,6 @@ export class LoggingInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
-    console.log(/INSIDE LOGGING INTERCEPTOR/);
     const request = context.switchToHttp().getRequest();
     const now = Date.now();
     return next
