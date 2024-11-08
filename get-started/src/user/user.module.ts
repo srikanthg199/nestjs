@@ -10,7 +10,15 @@ import { APP_GUARD } from '@nestjs/core';
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
-  providers: [UserService, UserRepository],
+  // providers: [UserService, UserRepository],
+  providers: [
+    {
+      provide: UserService,
+      useClass: UserService,
+    },
+    UserRepository,
+  ],
+
   exports: [UserService],
 })
 export class UserModule {}

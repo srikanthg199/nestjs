@@ -15,6 +15,7 @@ export class AuthService {
       return null;
     }
     const { password: _password, ...user } = findUser;
-    return this.jwtService.signAsync(user);
+    const token = await this.jwtService.signAsync(user);
+    return { user, token };
   }
 }

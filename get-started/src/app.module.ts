@@ -9,9 +9,18 @@ import { RolesGuard } from './guards/roles.guard';
 import { HttpExceptionFilter } from './exceptions/http-exception.filter';
 import { dataSourceOptions } from 'db/data-source';
 import { AuthModule } from './auth/auth.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { FileUploadController } from './file-upload/file-upload.controller';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSourceOptions), UserModule, AuthModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot(dataSourceOptions),
+    UserModule,
+    AuthModule,
+    FileUploadModule,
+  ],
   controllers: [AppController],
   providers: [
     // {
