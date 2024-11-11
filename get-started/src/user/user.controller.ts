@@ -14,9 +14,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
-import { AuthGuard } from 'src/guards/auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
-import { RolesGuard } from 'src/guards/roles.guard';
 import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
 import { Response } from 'express';
 import { sendResponse } from 'src/utils/response.util';
@@ -25,7 +23,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 @Controller('user')
 // @UseGuards(AuthGuard)
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   async create(
