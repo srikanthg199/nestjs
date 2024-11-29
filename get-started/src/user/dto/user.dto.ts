@@ -1,10 +1,25 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  isString,
-  IsString,
-} from 'class-validator';
+import { Exclude, Expose } from 'class-transformer';
+import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+
+export class UserDto {
+  // @Expose()
+  // id: string;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  email: string;
+
+  @Expose()
+  age: number;
+
+  @Expose()
+  isActive: boolean;
+
+  @Exclude() // Exclude sensitive data
+  password: string;
+}
 
 export class CreateUserDto {
   @IsNotEmpty()

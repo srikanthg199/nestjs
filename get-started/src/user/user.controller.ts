@@ -13,15 +13,16 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto, UserDto } from './dto/user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
 import { Response } from 'express';
 import { sendResponse } from 'src/utils/response.util';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 
 @Controller('user')
-// @UseGuards(AuthGuard)
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -37,13 +38,15 @@ export class UserController {
   @Get()
   @Roles(['admin'])
   // @UseGuards(AuthGuard, RolesGuard)
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(LoggingInterceptor)
+  // @UseGuards(JwtAuthGuard)
   async findAll(@Res() res: Response) {
     const users = await this.userService.getUsers();
     return sendResponse(res, users, 'Users fetched successfully');
   }
 
+  @UseInterceptors(LoggingInterceptor)
+  @Serialize(UserDto)
+  // @UseInterceptors(new SerializeInterceptor(UserDto))
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
     const user = await this.userService.getUserById(id);
