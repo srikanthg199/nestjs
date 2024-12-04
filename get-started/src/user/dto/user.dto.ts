@@ -2,7 +2,7 @@ import { Exclude, Expose, Type } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { TaskDto } from 'src/task/dto/tack.dto';
 
-export class UserDto {
+export class GetUserDto {
   @Expose()
   id: string;
 

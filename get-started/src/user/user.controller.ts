@@ -13,25 +13,23 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, UpdateUserDto, UserDto } from './dto/user.dto';
+import { CreateUserDto, GetUserDto, UpdateUserDto } from './dto/user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Response } from 'express';
 import { sendResponse } from 'src/utils/response.util';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 
+@UseInterceptors(new SerializeInterceptor(GetUserDto))
 @Controller('user')
 @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async create(
-    @Body(new ValidationPipe()) createUserDto: CreateUserDto,
-    @Res() res: Response,
-  ) {
+  async create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
     const user = await this.userService.createUser(createUserDto);
-    return sendResponse(res, user, 'User created successfully');
+    return { status: true, message: 'User created successfully', data: user };
   }
 
   @Get()
@@ -43,12 +41,10 @@ export class UserController {
     return sendResponse(res, users, 'Users fetched successfully');
   }
 
-  @UseInterceptors(new SerializeInterceptor(UserDto))
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.userService.getUserById(id);
-    // Set dynamic status and message
-    return user;
+    return { status: true, message: 'User fetched successfully', data: user };
   }
 
   @Delete(':id')

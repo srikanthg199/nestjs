@@ -14,11 +14,16 @@ export class SerializeInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map((data) => {
-        console.log(/dd/, data);
-        return plainToInstance(this.serializerClass, data, {
+      map((response) => {
+        const { data, message, status } = response;
+        const transformedObj = plainToInstance(this.serializerClass, data, {
           excludeExtraneousValues: true,
         });
+        return {
+          status: status || true,
+          message: message || 'Success',
+          data: transformedObj,
+        };
       }),
     );
   }

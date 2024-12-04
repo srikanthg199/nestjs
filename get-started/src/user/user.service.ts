@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
+import { generateHash } from 'src/utils/auth.utils';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,8 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const hashPassword = await generateHash(createUserDto.password);
+    createUserDto.password = hashPassword;
     return this.userRepository.create(createUserDto);
   }
 
