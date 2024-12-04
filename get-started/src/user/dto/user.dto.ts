@@ -1,9 +1,10 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { TaskDto } from 'src/task/dto/tack.dto';
 
 export class UserDto {
-  // @Expose()
-  // id: string;
+  @Expose()
+  id: string;
 
   @Expose()
   name: string;
@@ -16,6 +17,10 @@ export class UserDto {
 
   @Expose()
   isActive: boolean;
+
+  @Expose()
+  @Type(() => TaskDto) // Use TaskDto to transform the nested tasks
+  tasks: TaskDto[];
 
   @Exclude() // Exclude sensitive data
   password: string;

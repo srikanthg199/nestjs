@@ -15,11 +15,10 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto, UserDto } from './dto/user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
-import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
 import { Response } from 'express';
 import { sendResponse } from 'src/utils/response.util';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
@@ -44,13 +43,12 @@ export class UserController {
     return sendResponse(res, users, 'Users fetched successfully');
   }
 
-  @UseInterceptors(LoggingInterceptor)
-  @Serialize(UserDto)
-  // @UseInterceptors(new SerializeInterceptor(UserDto))
+  @UseInterceptors(new SerializeInterceptor(UserDto))
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.userService.getUserById(id);
-    return sendResponse(res, user, 'User fetched successfully');
+    // Set dynamic status and message
+    return user;
   }
 
   @Delete(':id')
