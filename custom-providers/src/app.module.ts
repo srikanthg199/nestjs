@@ -32,6 +32,23 @@ export class LoggerService {
   }
 }
 
+// Async Provider
+@Injectable()
+export class AsyncConfigService {
+  async getAsyncConfig(key: string): Promise<string> {
+    // Simulate an asynchronous operation (like an HTTP request or DB query)
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (key === 'config_key') {
+          resolve('Fetched Async Config Value');
+        } else {
+          reject(new Error('Configuration not found'));
+        }
+      }, 1000); // Simulate async operation
+    });
+  }
+}
+
 @Module({
   imports: [],
   controllers: [AppController],
@@ -52,11 +69,19 @@ export class LoggerService {
       inject: [ConfigService],
     },
     {
+      provide: 'ASYNC_CONFIG',
+      useFactory: async (asyncConfigService: AsyncConfigService) => {
+        return await asyncConfigService.getAsyncConfig('config_key');
+      },
+      inject: [AsyncConfigService],
+    },
+    {
       provide: 'LOGGING_SERVICE',
       useExisting: LoggerService, // Alias for LoggerService
     },
     LoggerService,
     ConfigService,
+    AsyncConfigService,
     AppService,
   ],
 })
