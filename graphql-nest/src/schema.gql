@@ -1,0 +1,40 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserSettings {
+  id: Int!
+  user_id: Int!
+  notifications: Boolean!
+  language: String!
+  darkMode: Boolean!
+}
+
+type User {
+  id: Int!
+  username: String!
+  display_name: String
+  settings: UserSettings
+}
+
+type Query {
+  getUserById(id: Int!): User
+  getUsers: [User!]
+}
+
+type Mutation {
+  createUser(createUserData: CreateUserInput!): User!
+  createUserSettings(createUserSettingsData: CreateUserSettingsInput!): UserSettings!
+}
+
+input CreateUserInput {
+  username: String!
+  display_name: String
+}
+
+input CreateUserSettingsInput {
+  user_id: Int!
+  notifications: Boolean = false
+  language: String = "false"
+  darkMode: Boolean = false
+}
