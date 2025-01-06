@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, GetUserDto, UpdateUserDto } from './dto/user.dto';
-import { Roles } from 'src/decorators/roles.decorator';
 import { Response } from 'express';
 import { sendResponse } from 'src/utils/response.util';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -33,7 +32,6 @@ export class UserController {
   }
 
   @Get()
-  @Roles(['admin'])
   // @UseGuards(AuthGuard, RolesGuard)
   // @UseGuards(JwtAuthGuard)
   async findAll(@Res() res: Response) {

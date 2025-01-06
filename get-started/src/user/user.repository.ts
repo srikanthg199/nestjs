@@ -30,4 +30,8 @@ export class UserRepository {
   async delete(id: string): Promise<void> {
     await this.userRepository.delete(id);
   }
+
+  async saveData(data: User): Promise<User> {
+    return this.userRepository.save(data);
+  }
 }

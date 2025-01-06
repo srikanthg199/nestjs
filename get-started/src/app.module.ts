@@ -12,6 +12,7 @@ import { FileUploadModule } from './file-upload/file-upload.module';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TaskModule } from './task/task.module';
+import { RolePermissionModule } from './common/role-permissions/role-permission.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { TaskModule } from './task/task.module';
     AuthModule,
     FileUploadModule,
     TaskModule,
+    RolePermissionModule,
   ],
   controllers: [AppController],
   providers: [

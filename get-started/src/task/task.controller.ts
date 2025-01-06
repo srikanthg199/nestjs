@@ -31,8 +31,10 @@ export class TaskController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const data = await this.taskService.findOne(id);
+    console.log(/dd/, data);
+    return data;
   }
 
   @Patch(':id')
