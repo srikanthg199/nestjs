@@ -1,4 +1,3 @@
-// src/permissions/permissions.guard.ts
 import {
   Injectable,
   CanActivate,
@@ -6,7 +5,6 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-// import { Permissions } from './permissions.enum';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -24,18 +22,20 @@ export class PermissionsGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    if (!user || !user.permissions) {
+    if (!user || !user.roles) {
       throw new ForbiddenException('Permissions not found');
     }
 
-    const hasPermission = requiredPermissions.every((permission) =>
-      user.permissions.includes(permission),
+    const userPermissions = user.roles.flatMap((role) =>
+      role.permissions.map((permission) => permission.key),
     );
 
+    const hasPermission = requiredPermissions.every((permission) =>
+      userPermissions.includes(permission),
+    );
     if (!hasPermission) {
       throw new ForbiddenException('Insufficient permissions');
     }
-
     return true;
   }
 }

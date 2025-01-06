@@ -41,8 +41,11 @@ export class UserService {
   }
 
   // Get user by email via body
-  async getUserByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { email } });
+  async getUserByEmail(email: string, relations: string[] = []): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+      relations,
+    });
     if (!user) {
       throw new NotFoundException(`User with email ${email} not found`);
     }

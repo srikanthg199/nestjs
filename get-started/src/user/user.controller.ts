@@ -18,6 +18,8 @@ import { Response } from 'express';
 import { sendResponse } from 'src/utils/response.util';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
+import { PermissionsGuard } from 'src/auth/guards/permissions.guard';
+import { RequiredPermission } from 'src/decorators/required-permission.decorator';
 
 @UseInterceptors(new SerializeInterceptor(GetUserDto))
 @Controller('user')
@@ -26,32 +28,40 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @UseGuards(PermissionsGuard)
+  @RequiredPermission('CREATE_USER')
   async create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
     const user = await this.userService.createUser(createUserDto);
     return { status: true, message: 'User created successfully', data: user };
   }
 
   @Get()
-  // @UseGuards(AuthGuard, RolesGuard)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(PermissionsGuard)
+  @RequiredPermission('FETCH_USERS')
   async findAll(@Res() res: Response) {
     const users = await this.userService.getUsers();
     return sendResponse(res, users, 'Users fetched successfully');
   }
 
   @Get(':id')
+  @UseGuards(PermissionsGuard)
+  @RequiredPermission('VIEW_USER')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.userService.getUserById(id);
     return { status: true, message: 'User fetched successfully', data: user };
   }
 
   @Delete(':id')
+  @UseGuards(PermissionsGuard)
+  @RequiredPermission('DELETE_USER')
   async remove(@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
     await this.userService.deleteUser(id);
     return sendResponse(res, null, 'User deleted successfully');
   }
 
   @Patch(':id')
+  @UseGuards(PermissionsGuard)
+  @RequiredPermission('UPDATE_USER')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,

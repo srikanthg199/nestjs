@@ -11,13 +11,19 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async validateUser({ email, password }: AuthPayloadDto) {
-    const findUser = await this.userService.getUserByEmail(email);
+    const findUser = await this.userService.getUserByEmail(email, [
+      'roles',
+      'roles.permissions',
+    ]);
     if (!findUser || !(await validatePassword(password, findUser.password))) {
       return null;
     }
+    console.log(findUser);
 
     const { password: _password, ...user } = findUser;
-    const token = await this.jwtService.signAsync(user);
+    const token = await this.jwtService.signAsync(user, {
+      expiresIn: '1d',
+    } as any);
     return { user, token };
   }
 }

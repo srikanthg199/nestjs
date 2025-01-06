@@ -62,16 +62,13 @@ export class RolePermissionService {
     });
 
     if (role) {
-      // Override existing permissions with the new set
       role.permissions = permissions;
     } else {
-      // Create a new role if it doesn't exist
       role = this.roleRepository.create({
         name: createRoleDto.name,
         permissions,
       });
     }
-
     // Save the updated or new role with the new permissions
     return await this.roleRepository.save(role);
   }
