@@ -18,12 +18,16 @@ export class AuthService {
     if (!findUser || !(await validatePassword(password, findUser.password))) {
       return null;
     }
-    console.log(findUser);
+    // Extract permissions from roles
+    const permissions = findUser.roles.flatMap((role) =>
+      role.permissions.map((permission) => permission.key),
+    );
+    // delete findUser.roles;
 
     const { password: _password, ...user } = findUser;
     const token = await this.jwtService.signAsync(user, {
       expiresIn: '1d',
     } as any);
-    return { user, token };
+    return { user, permissions, token };
   }
 }

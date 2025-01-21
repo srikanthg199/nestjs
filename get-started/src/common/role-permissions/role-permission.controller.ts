@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { sendResponse } from 'src/utils/response.util';
 import { Response } from 'express';
 import { RolePermissionService } from './role-permission.service';
@@ -25,20 +34,46 @@ export class seederController {
     return sendResponse(res, Roles, 'Roles fetched successfully');
   }
 
-  @Post('role')
+  @Post('roles')
   async createRole(
-    @Body() createRoleDto: { name: string; permissionIds: string[] },
+    @Body() createRoleDto: { name: string },
     @Res() res: Response,
   ) {
     await this.rolePermissionService.createRole(createRoleDto);
-    return sendResponse(res, {}, 'permission completed successfully');
+    return sendResponse(res, {}, 'Role completed successfully');
   }
+
+  @Patch('roles/:roleId')
+  async updateRole(
+    @Param('roleId') roleId: string,
+    @Body() createRoleDto: { name: string; permissionIds: string[] },
+    @Res() res: Response,
+  ) {
+    const role = await this.rolePermissionService.updateRole(
+      roleId,
+      createRoleDto,
+    );
+    return sendResponse(res, role, 'Role updated successfully');
+  }
+
+  @Get('roles/:id')
+  async getRole(@Param('id') id: string, @Res() res: Response) {
+    const Roles = await this.rolePermissionService.getRoleWithPermissions(id);
+    return sendResponse(res, Roles, 'Roles fetched successfully');
+  }
+
+  @Delete('/roles/:roleId')
+  async deleteRole(@Param('roleId') roleId: string, @Res() res: Response) {
+    await this.rolePermissionService.deleteRole(roleId);
+    return sendResponse(res, {}, 'Role deleted successfully');
+  }
+
   @Post('user-role')
   async createUserRole(
     @Body() createUserRoleDto: { userId: string; roleIds: string[] },
     @Res() res: Response,
   ) {
     await this.rolePermissionService.createUserRoles(createUserRoleDto);
-    return sendResponse(res, {}, 'permission completed successfully');
+    return sendResponse(res, {}, 'User role created successfully');
   }
 }

@@ -11,7 +11,7 @@ export class UserRepository {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({ relations: ['roles'] });
   }
 
   async findOne(filter: object): Promise<User> {
